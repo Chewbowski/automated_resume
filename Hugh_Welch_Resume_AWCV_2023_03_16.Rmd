@@ -1,0 +1,197 @@
+---
+name: Hugh
+surname: Welch
+position: "Senior Strategic Innovations Analyst"
+# profilepic: "hugh_welch_blue_black_round_qr_code_linkedin.png"
+phone: (803) 467-4294
+# www: mariecurie.com
+email: "hughwelch@gmail.com"
+# twitter: DontLookUpFilm
+linkedin: www.linkedin.com/in/hughwelchdata
+# github: github.com/Chewbowski
+aboutme: 'Hugh Welch has been a public servant with the Veterans Health Administration for over 15 years, specializing in combining principals from Data Science, Visualization, and Lean Six Sigma with Human Centered Design to guide improvements in Veteran Healthcare.'
+# date: "`r format(Sys.time(), '%B %Y')`"
+headcolor: 414141
+output: 
+  vitae::awesomecv:
+    page_total: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(vitae)
+library(here)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+
+```
+
+
+
+```{r load_data}
+
+xl_file <- here::here('resume_builder_data_frames.xlsx')
+
+read_sheets_func <- function(sht){read_xlsx(xl_file, sht)}
+
+df_header <- read_sheets_func('Header')
+df_work_history <- read_sheets_func('Work_History')
+df_accomplishments <- read_sheets_func('Accomplishments')
+df_skills <- read_sheets_func('Skills')
+df_responsibilities <- read_sheets_func('Responsibilities')
+df_software <- read_sheets_func('Software')
+df_education <- read_sheets_func('Education')
+df_references <- read_sheets_func('References')
+
+
+```
+
+
+```{r tables}
+
+tb_work_history <-
+  df_work_history %>%
+  detailed_entries(
+    with = Position,
+    what = Department,
+    why = paste0('Grade: ', Grade, ',  Hours: ', Hours),
+    where = paste0(Start, ' to ', End),
+    when = Office
+  )
+
+
+
+tb_accomplishments <- 
+  df_accomplishments %>% 
+  detailed_entries(with = Category,
+                   what = Description,
+                   why = Accomplishment)
+
+
+
+tb_skills <- 
+  df_skills %>% 
+  detailed_entries(why = Skill)
+
+
+
+tb_responsibilities <- 
+  df_responsibilities %>% 
+  detailed_entries(with = Position,
+                   what = Description,
+                   why = Responsibility)
+
+
+
+tb_software <- 
+  df_software %>% 
+  detailed_entries(what = 'Highly skilled in the following applications',
+                   why = Software)
+
+
+
+tb_education <- 
+  df_education %>% 
+  detailed_entries(with = Degree,
+                   what = Location)
+
+
+
+tb_references <- 
+  df_references %>% 
+  pivot_longer(cols = c(Location:Email),
+               names_to = 'fn',
+               values_to = 'fv') %>% 
+  group_by(Reference,
+           Title) %>% 
+  summarise(df_why = paste0(fn, ': ', fv)) %>% 
+  ungroup() %>% 
+  detailed_entries(with = Reference,
+                   what = Title,
+                   why = df_why)
+
+```
+
+
+
+
+
+
+# Accomplishments
+
+```{r accomplishments}
+
+tb_accomplishments
+
+```
+
+
+\newpage
+
+
+# Work History
+
+```{r work_history}
+
+tb_work_history
+                   
+```
+
+
+# Professional Skills
+
+```{r skills}
+
+tb_skills
+
+```
+
+
+
+# Responsibilites
+
+```{r responsibilities}
+
+tb_responsibilities
+
+```
+
+
+
+
+# Software
+
+```{r Software}
+
+tb_software
+
+```
+
+
+
+# Education
+
+```{r education}
+
+tb_education
+
+```
+
+
+
+\newpage
+
+
+# References
+
+```{r references}
+
+tb_references
+
+```
+
