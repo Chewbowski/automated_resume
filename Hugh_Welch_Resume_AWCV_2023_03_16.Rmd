@@ -4,9 +4,7 @@ surname: Welch
 position: "Senior Strategic Innovations Analyst"
 # profilepic: "hugh_welch_blue_black_round_qr_code_linkedin.png"
 phone: (803) 467-4294
-# www: mariecurie.com
 email: "hughwelch@gmail.com"
-# twitter: DontLookUpFilm
 linkedin: www.linkedin.com/in/hughwelchdata
 # github: github.com/Chewbowski
 aboutme: 'Hugh Welch has been a public servant with the Veterans Health Administration for over 15 years, specializing in combining principals from Data Science, Visualization, and Lean Six Sigma with Human Centered Design to guide improvements in Veteran Healthcare.'
@@ -76,7 +74,8 @@ tb_accomplishments <-
 
 tb_skills <- 
   df_skills %>% 
-  detailed_entries(why = Skill)
+  detailed_entries(what = 'Recognized expert in the following areas',
+                   why = Skill)
 
 
 
@@ -143,21 +142,26 @@ tb_work_history
 ```
 
 
-# Professional Skills
 
-```{r skills}
+# Responsibilities
 
-tb_skills
+```{r responsibilities}
+
+tb_responsibilities
 
 ```
 
 
 
-# Responsibilites
+\newpage 
 
-```{r responsibilities}
 
-tb_responsibilities
+
+# Professional Skills
+
+```{r skills}
+
+tb_skills
 
 ```
 
