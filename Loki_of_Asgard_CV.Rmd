@@ -1,0 +1,141 @@
+---
+name: Loki
+surname: of Asgard
+position: "God of Mischief"
+# address: "Asgard"
+phone: 555-555-5555
+# www: marvel.com
+email: "hughwelch@gmail.com"
+# twitter: marvel_villains
+github: chewbowski
+linkedin: hughwelchdata
+aboutme: 'Loki has diligently served as the God of Mischief for several thousands of years. He has extensive experience in shapeshifting, mind control, claiming his birthright as supreme ruler, and facilitating general mayhem.'
+# date: "`r format(Sys.time(), '%B %Y')`"
+headcolor: 414141
+output: 
+  vitae::awesomecv:
+    page_total: true
+---
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(vitae)
+library(readxl)
+library(tidyverse)
+
+```
+
+
+```{r import_data}
+
+xl_file <- here::here('cv_resume_data_tables.xlsx')
+
+
+read_sheets_func <- function(sht){read_xlsx(xl_file, sht)}
+
+
+df_work_history <- read_sheets_func('Work_History')
+df_accomplishments <- read_sheets_func('Accomplishments')
+df_skills <- read_sheets_func('Skills')
+df_responsibilities <- read_sheets_func('Responsibilities')
+df_education <- read_sheets_func('Education')
+df_references <- read_sheets_func('References')
+
+```
+
+
+# Professional History
+
+```{r history}
+
+df_work_history %>% 
+  detailed_entries(with = Position,  # left_top_bold_line
+                   what = Department,  # left_second_line
+                   why = paste0('Grade: ',
+                                Grade,
+                                ', Weekly Hours: ',
+                                Hours_per_Week),   # left_bullet_points
+                   where = Timeframe, # right_first_line
+                   when = Office,  # right_second_line
+                   )
+
+```
+
+
+# Responsibilities
+
+```{r responsibilities}
+
+df_responsibilities %>%
+  left_join(df_work_history %>% 
+              select(Position,
+                     Office)) %>% 
+  arrange(Office,
+          Position,
+          Importance) %>%
+  detailed_entries(with = Position,
+                   what = Category,
+                   why = Responsibility)
+
+```
+
+
+# Education
+
+```{r education}
+
+df_education %>% 
+  detailed_entries(with = Degree,
+                   what = Institution,
+                   where = Date)
+
+```
+
+
+\newpage
+
+
+# Relevant Skills
+
+```{r skills}
+
+df_skills %>% 
+  arrange(Category,
+          Importance) %>% 
+  detailed_entries(what = Category,
+                   why = Skill)
+
+```
+
+
+# References
+
+```{r references, results='asis'}
+
+df_references %>% 
+  pivot_longer(cols = c(Relationship,
+                        Phone,
+                        Email),
+               names_to = 'names',
+               values_to = 'values') %>% 
+  mutate(names = paste0(names, ': ')) %>% 
+  summarise(Who,
+            Title,
+            entry = paste0(names, values)) %>% 
+  ungroup() %>% 
+  detailed_entries(with = Who,
+                   what = Title,
+                   why = entry)
+
+```
+
+
+
+
+
+
+
+
